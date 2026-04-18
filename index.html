@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XidoTerra Soil AI</title>
+    
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <style>
+body {
+    font-family: Arial;
+    background: #eef7ee;
+    padding: 20px;
+}
+
+h2 {
+    color: #2e7d32;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    width: 320px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+button {
+    background: #2e7d32;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 8px;
+}
+
+#map {
+    height: 300px;
+    border-radius: 12px;
+}
+
+.result-card {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.insight {
+    background: #e3f2fd;
+    padding: 10px;
+    border-left: 4px solid #1976d2;
+    margin-bottom: 10px;
+}
+
+.recommend {
+    background: #f1f8e9;
+    padding: 10px;
+    border-left: 4px solid #558b2f;
+    margin-bottom: 10px;
+}
+b {
+    font-size: 16px;
+}
+
+.low { color: red; font-weight: bold; }
+.medium { color: orange; font-weight: bold; }
+.high { color: green; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+
+<h2>🌱 XidoTerra AI – Smart Soil & Fertility Advisor</h2>
+<p style="color:gray;">
+AI-powered soil & climate intelligence for smarter farming decisions
+</p>
+<div class="container">
+
+    <!-- FORM CARD -->
+    <div class="card">
+        <form id="soilForm">
+
+            <label>Crop:</label><br>
+            <input type="text" id="crop"><br><br>
+
+            <label>Soil Color:</label><br>
+            <input type="text" id="soil_color"><br><br>
+
+            <label>Previous Yield:</label><br>
+            <select id="previous_yield">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select><br><br>
+
+            <label>Fertilizer Used:</label><br>
+            <select id="fertilizer_used">
+                <option value="none">None</option>
+                <option value="organic">Organic</option>
+                <option value="chemical">Chemical</option>
+            </select><br><br>
+
+            <label>Location:</label><br>
+            <input type="text" id="location">
+            <small>📍 Auto-detected. You can edit if incorrect.</small><br><br>
+
+            <button type="button" id="gpsBtn">📍 Use My Location</button>
+            <button type="submit">Analyze Soil</button>
+
+            <input type="hidden" id="latitude">
+            <input type="hidden" id="longitude">
+
+        </form>
+    </div>
+
+    <!-- MAP CARD -->
+    <div class="card">
+        <h4>📍 Farm Location</h4>
+        <p id="gpsDisplay"></p>
+        <div id="map"></div>
+    </div>
+
+</div>
+
+<!-- RESULT CARD -->
+<div class="card result-card" id="result"></div>
+
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+let map = null;
+
+// FORMAT
+function formatLevel(level) {
+    return `<span class="${level}">${level.toUpperCase()}</span>`;
+}
+
+// 🔥 BAR FUNCTION (MUST BE OUTSIDE)
+function getBar(level) {
+    if (level === "low") {
+        return "🟥 ▓▓░░░░";
+    } else if (level === "medium") {
+        return "🟧 ▓▓▓▓░░";
+    } else {
+        return "🟩 ▓▓▓▓▓▓";
+    }
+}
+
+// GPS BUTTON
+document.getElementById("gpsBtn").addEventListener("click", function () {
+
+    if (!navigator.geolocation) {
+        alert("Geolocation not supported");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            console.log("LAT:", lat, "LON:", lon);
+
+            document.getElementById("latitude").value = lat;
+            document.getElementById("longitude").value = lon;
+
+            document.getElementById("gpsDisplay").innerHTML =
+                `<b>Latitude:</b> ${lat}<br><b>Longitude:</b> ${lon}`;
+
+            // Reverse Geocoding
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+            .then(response => response.json())
+            .then(data => {
+
+                let state = "Unknown";
+
+                if (data.address.state) {
+                    state = data.address.state;
+                } else if (data.address.county) {
+                    state = data.address.county;
+                } else if (data.address.region) {
+                    state = data.address.region;
+                }
+
+                document.getElementById("location").value = state;
+                document.getElementById("gpsDisplay").innerHTML += `<br><b>State:</b> ${state}`;
+            });
+
+            // MAP
+            if (!map) {
+                map = L.map('map').setView([lat, lon], 13);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            } else {
+                map.setView([lat, lon], 13);
+            }
+
+            L.marker([lat, lon]).addTo(map)
+                .bindPopup("📍 Farm Location")
+                .openPopup();
+
+        },
+        function(error) {
+            alert("ERROR: " + error.message);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+    );
+});
+
+// FORM SUBMIT
+document.getElementById("soilForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const data = {
+        crop: document.getElementById("crop").value,
+        soil_color: document.getElementById("soil_color").value,
+        previous_yield: document.getElementById("previous_yield").value,
+        fertilizer_used: document.getElementById("fertilizer_used").value,
+        location: document.getElementById("location").value,
+        latitude: document.getElementById("latitude").value,
+        longitude: document.getElementById("longitude").value
+    };
+
+    fetch("https://xidoterra.onrender.com/analyze", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+
+    const nutrients = result.nutrient_status;
+    const recommendations = result.recommendations;
+    const insights = result.insights;
+    const fertilizerPlan = result.fertilizer_plan;
+    const summary = result.summary;
+
+    let output = "<h3>🌱 Soil Analysis Result</h3>";
+
+    // ✅ SHOW SUMMARY FIRST
+    output += `<div style="
+        background:#fff3cd;
+        padding:12px;
+        border-left:5px solid #ff9800;
+        margin-bottom:15px;
+        border-radius:8px;
+        font-size:16px;
+        line-height:1.5;
+    ">
+    🌟 <b>Summary:</b> ${summary}
+    </div>`;
+    output += "<hr style='margin:15px 0; border:none; border-top:1px solid #eee;'>";
+
+    // Nutrients
+    output += `<div style="margin-bottom:10px;">
+    <b>Nitrogen:</b> ${getBar(nutrients.nitrogen)} ${formatLevel(nutrients.nitrogen)}
+    </div>`;
+    
+    output += `<div style="margin-bottom:10px;">
+    <b>Phosphorus:</b> ${getBar(nutrients.phosphorus)} ${formatLevel(nutrients.phosphorus)}
+    </div>`;
+    
+
+    output += `<div style="margin-bottom:10px;">
+    <b>Potassium:</b> ${getBar(nutrients.potassium)} ${formatLevel(nutrients.potassium)}
+    </div>`;
+    output += "<hr style='margin:15px 0; border:none; border-top:1px solid #eee;'>";
+
+    // Insights
+    output += "<h4>🌍 Location Insights</h4>";
+    insights.forEach(ins => {
+        output += `<div class="insight">💡 ${ins}</div>`;
+        output += "<hr style='margin:15px 0; border:none; border-top:1px solid #eee;'>";
+    });
+
+    // Recommendations
+    output += "<h4>💡 Recommendations</h4>";
+    recommendations.forEach(rec => {
+        output += `<div class="recommend">✅ ${rec}</div>`;
+        output += "<hr style='margin:15px 0; border:none; border-top:1px solid #eee;'>";
+    });
+
+    // Fertilizer Plan
+    output += "<h4>🧪 Fertilizer Plan</h4>";
+
+if (fertilizerPlan.length > 0) {
+    fertilizerPlan.forEach(plan => {
+        output += `<div class="recommend">🌾 ${plan}</div>`;
+    });
+} else {
+    output += `<div class="recommend">✅ No major fertilizer adjustment needed</div>`;
+}
+
+    // ✅ DISPLAY LAST
+    document.getElementById("result").innerHTML = output;
+});
+
+    });
+
+</script>
+
+</body>
+</html>
