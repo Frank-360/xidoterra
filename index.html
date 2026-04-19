@@ -19,19 +19,22 @@ h2 {
     color: #2e7d32;
 }
 
-/* DESKTOP LAYOUT */
+/* FIXED LAYOUT */
 .container {
     display: flex;
     gap: 20px;
     align-items: flex-start;
+    max-width: 1000px;
+    margin: auto;
 }
 
-/* CARD STYLE */
+/* FIXED CARD */
 .card {
     background: white;
     padding: 15px;
     border-radius: 12px;
     flex: 1;
+    min-width: 0; /* 🔥 VERY IMPORTANT */
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
@@ -93,16 +96,16 @@ b {
     }
 
     .container {
-        flex-direction: column !important;
+        flex-direction: column;
+        gap: 15px;
     }
 
     .card {
-        width: 100% !important;
-        padding: 12px;
+        width: 100%;
     }
 
     #map {
-        height: 250px !important;
+        height: 220px;
     }
 
     input, select, button {
@@ -112,8 +115,14 @@ b {
 
     h2 {
         font-size: 20px;
+        text-align: center;
+    }
+
+    p {
+        text-align: center;
     }
 }
+        
 </head>
 
 <body>
@@ -252,6 +261,12 @@ document.getElementById("gpsBtn").addEventListener("click", function () {
             L.marker([lat, lon]).addTo(map)
                 .bindPopup("📍 Farm Location")
                 .openPopup();
+
+         setTimeout(() => {
+            if (map) {
+        map.invalidateSize();
+            }
+        }, 300);
 
         },
         function(error) {
