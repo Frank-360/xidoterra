@@ -74,6 +74,52 @@ b {
 .low { color: red; font-weight: bold; }
 .medium { color: orange; font-weight: bold; }
 .high { color: green; font-weight: bold; }
+
+        @media (max-width: 768px) {
+
+    body {
+        padding: 10px;
+    }
+    form {
+        width: 100%;
+    }
+
+    #map {
+        height: 250px;
+    }
+            
+.container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    flex: 1;
+    width: 100%;
+    padding: 12px;
+}
+
+            
+
+    h2 {
+        font-size: 20px;
+    }
+
+    button {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    input, select {
+        width: 100%;
+        font-size: 16px;
+    }
+}
     </style>
 </head>
 
