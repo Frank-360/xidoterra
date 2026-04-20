@@ -247,39 +247,40 @@ document.getElementById("gpsBtn").addEventListener("click", function () {
                 document.getElementById("gpsDisplay").innerHTML += `<br><b>State:</b> ${state}`;
             });
 
-            // MAP
-            if (!map) {
-                map = L.map('map').setView([lat, lon], 13);
+      // MAP
+if (!map) {
 
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
-                }).addTo(map);
-            } else {
-                map.setView([lat, lon], 13);
-            }
+    map = L.map('map').setView([lat, lon], 13);
 
-            L.marker([lat, lon]).addTo(map)
-                .bindPopup("📍 Farm Location")
-                .openPopup();
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
 
-         setTimeout(() => {
-            if (map) {
-        map.invalidateSize();
-            }
-        }, 300);
+} else {
+    map.setView([lat, lon], 13);
+}
 
-        },
-        function(error) {
-            alert("ERROR: " + error.message);
-        },
-        {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 0
-        }
-    );
-});
+// Add marker
+L.marker([lat, lon]).addTo(map)
+    .bindPopup("📍 Farm Location")
+    .openPopup();
 
+// 🔥 Fix rendering on mobile
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 400);
+    },
+
+    function(error) {
+        alert("ERROR: " + error.message);
+    },
+
+    {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+    }
+);
 // FORM SUBMIT
 document.getElementById("soilForm").addEventListener("submit", function(e) {
     e.preventDefault();
