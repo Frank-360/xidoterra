@@ -6,131 +6,149 @@
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-    <style>
+<script>
+  /* GENERAL */
+    
 body {
-    font-family: Arial;
-    background: #eef7ee;
-    padding: 20px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f7f5;
     margin: 0;
+    padding: 0;
 }
 
-h2 {
-    color: #2e7d32;
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #2e7d32, #66bb6a);
+    color: white;
 }
 
-/* FIXED LAYOUT */
+.hero h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.hero p {
+    margin-top: 8px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* CONTAINER */
 .container {
     display: flex;
     gap: 20px;
-    align-items: flex-start;
     max-width: 1000px;
-    margin: auto;
+    margin: 20px auto;
+    padding: 0 15px;
 }
 
-/* FIXED CARD */
+/* CARD */
 .card {
     background: white;
-    padding: 15px;
-    border-radius: 12px;
+    padding: 18px;
+    border-radius: 14px;
     flex: 1;
-    min-width: 0; /* 🔥 VERY IMPORTANT */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    transition: 0.2s ease;
 }
 
-/* BUTTONS */
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* FORM */
+input, select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+/* BUTTON */
 button {
     background: #2e7d32;
     color: white;
     padding: 12px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     width: 100%;
     margin-top: 10px;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #1b5e20;
 }
 
 /* MAP */
 #map {
-    height: 300px;
-    border-radius: 12px;
+    height: 280px;
+    border-radius: 10px;
 }
 
 /* RESULT */
 .result-card {
-    margin-top: 15px;
-    padding: 15px;
-    border-radius: 10px;
+    max-width: 1000px;
+    margin: 20px auto;
 }
 
-/* INSIGHTS */
+/* INSIGHT */
 .insight {
     background: #e3f2fd;
     padding: 10px;
     border-left: 4px solid #1976d2;
+    border-radius: 6px;
     margin-bottom: 10px;
 }
 
-/* RECOMMENDATIONS */
+/* RECOMMEND */
 .recommend {
     background: #f1f8e9;
     padding: 10px;
     border-left: 4px solid #558b2f;
+    border-radius: 6px;
     margin-bottom: 10px;
 }
 
-/* TEXT */
-b {
-    font-size: 16px;
+/* SUMMARY */
+.summary {
+    background: #fff3cd;
+    padding: 12px;
+    border-left: 5px solid #ff9800;
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
-.low { color: red; font-weight: bold; }
-.medium { color: orange; font-weight: bold; }
-.high { color: green; font-weight: bold; }
-
-/* 🔥 MOBILE FIX (THIS IS THE KEY) */
+/* MOBILE */
 @media (max-width: 768px) {
-
-    body {
-        padding: 10px;
-    }
 
     .container {
         flex-direction: column;
-        gap: 15px;
     }
 
-    .card {
-        width: 100%;
+    .hero h1 {
+        font-size: 22px;
     }
 
     #map {
         height: 220px;
     }
-
-    input, select, button {
-        width: 100%;
-        font-size: 16px;
-    }
-
-    h2 {
-        font-size: 20px;
-        text-align: center;
-    }
-
-    p {
-        text-align: center;
-    }
 }
-        
+</script>     
 </head>
 
 <body>
 
-<h2>🌱 XidoTerra AI – Smart Soil & Fertility Advisor</h2>
-<p style="color:gray;">
-AI-powered soil & climate intelligence for smarter farming decisions
-</p>
+<div class="hero">
+    <h1>🌱 XidoTerra AI</h1>
+    <p>Smart soil & fertilizer insights for better farming decisions</p>
+</div>
+        
 <div class="container">
 
     <!-- FORM CARD -->
@@ -323,9 +341,10 @@ document.getElementById("soilForm").addEventListener("submit", function(e) {
         font-size:16px;
         line-height:1.5;
     ">
-    🌟 <b>Summary:</b> ${summary}
     </div>`;
-    output += "<hr style='margin:15px 0; border:none; border-top:1px solid #eee;'>";
+    output += `<div class="summary">
+🌟 <b>Summary:</b> ${summary}
+</div>`;
 
     // Nutrients
     output += `<div style="margin-bottom:10px;">
