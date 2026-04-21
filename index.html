@@ -17,8 +17,12 @@
 
 /* BODY */
 body {
+    background: red;
+    
+body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #f4f7f5;
+    
 }
 
 /* HERO */
@@ -39,23 +43,28 @@ body {
     opacity: 0.9;
 }
 
-/* MAIN CONTAINER (STRICT SINGLE COLUMN) */
+/* FORCE SINGLE COLUMN - BULLETPROOF */
 .container {
     max-width: 700px;
     margin: 20px auto;
     padding: 0 15px;
 }
 
-/* CARD (STACKED BLOCKS) */
+/* STACK EVERYTHING */
+.container > * {
+    display: block;
+    width: 100%;
+}
+
+/* CARD */
 .card {
     display: block;
     width: 100%;
     background: white;
     padding: 20px;
     border-radius: 16px;
-    margin-bottom: 20px; /* 👈 ensures vertical spacing */
+    margin-bottom: 20px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-    transition: 0.2s ease;
 }
 
 .card:hover {
