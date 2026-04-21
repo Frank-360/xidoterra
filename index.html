@@ -36,10 +36,11 @@ body {
 }
 
 /* CONTAINER */
-.container {
+    .container {
     display: flex;
+    flex-direction: column; /* 👈 THIS IS THE KEY FIX */
     gap: 20px;
-    max-width: 1000px;
+    max-width: 700px; /* optional: makes it more premium */
     margin: 20px auto;
     padding: 0 15px;
 }
@@ -47,12 +48,14 @@ body {
 /* CARD */
 .card {
     background: white;
-    padding: 18px;
-    border-radius: 14px;
-    flex: 1;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    transition: 0.2s ease;
+    padding: 20px;
+    border-radius: 16px;
+    width: 100%; /* ensures full width */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+     transition: 0.2s ease;
+     flex: 1;
 }
+    
 
 .card:hover {
     transform: translateY(-2px);
@@ -87,7 +90,7 @@ button:hover {
 
 /* MAP */
 #map {
-    height: 280px;
+    height: 350px;
     border-radius: 10px;
 }
 
@@ -192,7 +195,7 @@ button:hover {
     <div class="card">
         <h4>📍 Farm Location</h4>
         <p id="gpsDisplay"></p>
-        <div id="map"></div>
+        <div id="map" style="display:none;"></div>
     </div>
 
 </div>
@@ -278,6 +281,9 @@ if (!map) {
     map.setView([lat, lon], 13);
 }
 
+    // ✅ SHOW MAP HERE
+document.getElementById("map").style.display = "block";
+            
 // Add marker
 L.marker([lat, lon]).addTo(map)
     .bindPopup("📍 Farm Location")
