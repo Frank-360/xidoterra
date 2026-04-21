@@ -7,13 +7,18 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <style>
-  /* GENERAL */
-    
+
+/* RESET */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* BODY */
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #f4f7f5;
-    margin: 0;
-    padding: 0;
 }
 
 /* HERO */
@@ -25,7 +30,6 @@ body {
 }
 
 .hero h1 {
-    margin: 0;
     font-size: 28px;
 }
 
@@ -35,20 +39,21 @@ body {
     opacity: 0.9;
 }
 
-/* CONTAINER */
+/* MAIN CONTAINER (STRICT SINGLE COLUMN) */
 .container {
     max-width: 700px;
     margin: 20px auto;
     padding: 0 15px;
-    display: block; /* simpler and safer */
 }
 
-/* CARD */
+/* CARD (STACKED BLOCKS) */
 .card {
+    display: block;
+    width: 100%;
     background: white;
     padding: 20px;
     border-radius: 16px;
-    width: 100%;
+    margin-bottom: 20px; /* 👈 ensures vertical spacing */
     box-shadow: 0 8px 20px rgba(0,0,0,0.06);
     transition: 0.2s ease;
 }
@@ -64,7 +69,7 @@ input, select {
     border-radius: 8px;
     border: 1px solid #ddd;
     margin-top: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 /* BUTTON */
@@ -85,7 +90,8 @@ button:hover {
 }
 
 /* MAP */
-    #map {
+#map {
+    width: 100%;
     height: 350px;
     border-radius: 10px;
     margin-top: 10px;
@@ -93,7 +99,7 @@ button:hover {
 
 /* RESULT */
 .result-card {
-    max-width: 1000px;
+    max-width: 700px;
     margin: 20px auto;
 }
 
@@ -126,11 +132,6 @@ button:hover {
 
 /* MOBILE */
 @media (max-width: 768px) {
-
-    .container {
-        flex-direction: column;
-    }
-
     .hero h1 {
         font-size: 22px;
     }
@@ -140,16 +141,7 @@ button:hover {
     }
 }
 
-    /* FORCE SINGLE COLUMN — OVERRIDE EVERYTHING */
-.container {
-    display: block !important;
-}
-
-.container .card {
-    display: block !important;
-    width: 100% !important;
-}
-</style>    
+</style>
 </head>
 
 <body>
