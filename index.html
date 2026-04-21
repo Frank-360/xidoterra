@@ -36,12 +36,11 @@ body {
 }
 
 /* CONTAINER */
-    .container {
+.container {
     max-width: 700px;
     margin: 20px auto;
     padding: 0 15px;
-     display: flex;
-    flex-direction: column;
+    display: block; /* simpler and safer */
 }
 
 /* CARD */
@@ -49,12 +48,10 @@ body {
     background: white;
     padding: 20px;
     border-radius: 16px;
-    width: 100%; /* ensures full width */
+    width: 100%;
     box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-     transition: 0.2s ease;
-     flex: 1;
+    transition: 0.2s ease;
 }
-    
 
 .card:hover {
     transform: translateY(-2px);
