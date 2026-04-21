@@ -85,9 +85,10 @@ button:hover {
 }
 
 /* MAP */
-#map {
+    #map {
     height: 350px;
     border-radius: 10px;
+    margin-top: 10px;
 }
 
 /* RESULT */
@@ -193,16 +194,17 @@ button:hover {
 
             <input type="hidden" id="latitude">
             <input type="hidden" id="longitude">
+            
+            <hr style="margin:15px 0;">
 
+            <h4>📍 Farm Location</h4>
+            <p id="gpsDisplay"></p>
+
+            <div id="map" style="display:none;"></div>
         </form>
     </div>
 
-    <!-- MAP CARD -->
-    <div class="card">
-        <h4>📍 Farm Location</h4>
-        <p id="gpsDisplay"></p>
-        <div id="map" style="display:none;"></div>
-    </div>
+   
 
 </div>
 
