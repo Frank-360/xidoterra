@@ -1,34 +1,26 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from soil_engine import analyze_soil
-from flask import render_template
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
-
-@app.route('/')
+# Home route (serves UI)
+@app.route("/")
 def home():
-    return "XidoTerra Soil AI API is running 🚀"
+    return render_template("index.html")
 
-@app.route('/ui')
-def ui():
-    return render_template('index.html')
-
-
-@app.route('/analyze', methods=['POST'])
+# API route
+@app.route("/analyze", methods=["POST"])
 def analyze():
-    data = request.json
+    data = request.get_json()
 
     crop = data.get('crop')
     soil_color = data.get('soil_color')
     previous_yield = data.get('previous_yield')
     fertilizer_used = data.get('fertilizer_used')
     location = data.get('location')
-    print("LOCATION RECEIVED:", location)
 
     if not all([crop, soil_color, previous_yield, fertilizer_used]):
         return jsonify({"error": "Missing input data"}), 400
@@ -37,6 +29,6 @@ def analyze():
 
     return jsonify(result)
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# Render-compatible run
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
